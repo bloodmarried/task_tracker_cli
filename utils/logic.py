@@ -1,4 +1,4 @@
-from utils.task_operation import create_task, view_tasks, update_task, delete_task
+from utils.task_operation import create_task, view_tasks, update_task, delete_task, mark_progress
 
 import os
 import argparse
@@ -11,6 +11,8 @@ def app_run():
     parser.add_argument("-l", "-list", help = "Выводит список задач", dest = "list", choices = ["todo", "in-progress", "done"], nargs="?", default=False)
     parser.add_argument("-u", "-update", help="Обновить описание задачи, 1 аргументом передается id, вторым описание", dest="update", nargs=2, default=None)
     parser.add_argument("-d", "-delete", help="Удалить задачу", dest="delete", nargs=1, type=int)
+    parser.add_argument("-mr", "-mark-in-progress", help="Отметить задачу как в процессе", nargs=1, type=int, dest="progress")
+    parser.add_argument("-md", "-mark-done", help="Отметить задачу как выполненную", nargs=1, type = int, dest="done")
 
     argv = parser.parse_args()
     name_file = "db.json"
@@ -31,3 +33,5 @@ def app_run():
             print("Введите первым аргументом число")
     if argv.delete is not None:
         delete_task(name_file, *argv.delete)
+    if argv.progress is not None:
+        mark_progress(name_file, *argv.progress)
