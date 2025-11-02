@@ -3,6 +3,30 @@ import datetime
 from utils.design import pretty_table
 
 
+def mark_done(filename, task_id):
+    tasks: list[dict] | None = read_file(filename)
+
+    if not tasks:
+        print("Файл пуст")
+        return
+    
+    for task in tasks:
+        if task["id"] == task_id:
+            if task["status"] == "done":
+                print("Задача уже выполнена")
+                break
+            else:
+                task["status"] = "done"
+                date = str(datetime.datetime.today().strftime("%Y.%m.%d %H:%M:%S"))
+                task["updateAt"] = date
+                write_file(filename, tasks)
+                print("Задача успешно отмечена как выполненная!")
+                break
+    else:
+        print("Задача не найдена")
+
+
+
 def mark_progress(filename, task_id):
     tasks: list[dict] | None = read_file(filename)
     if tasks is not None and tasks:
@@ -32,7 +56,7 @@ def mark_progress(filename, task_id):
 def delete_task(filename, task_id):
     tasks: list[dict] | None = read_file(filename)
     
-    if tasks is None or not tasks:
+    if not tasks:
         print("Файл пуст")
         return
     
@@ -56,7 +80,7 @@ def delete_task(filename, task_id):
 def update_task(filename: str, task_id: int, new_description: str):
     tasks: list[dict] | None = read_file(filename)
     
-    if tasks is None or not tasks:
+    if not tasks:
         print("Файл пуст")
         return
     
@@ -82,9 +106,9 @@ def update_task(filename: str, task_id: int, new_description: str):
     
 
 
-def create_task(name_file: str, description: str):
+def create_task(filename: str, description: str):
 
-    tasks: list[dict] | None = read_file(name_file)
+    tasks: list[dict] | None = read_file(filename)
     date = str(datetime.datetime.today().strftime("%Y.%m.%d %H:%M:%S"))
     if tasks is not None and tasks:
         last_task = tasks[-1]
@@ -92,18 +116,18 @@ def create_task(name_file: str, description: str):
         data = {"id": new_id, "status": "todo", "description": description, 
                 "createAt": date, "updateAt": date}
         tasks.append(data)
-        write_file(name_file, tasks)
+        write_file(filename, tasks)
         print(f"Task added successfully (ID: {new_id})")
     else:
         
         data = [{"id": 1, "status": "todo", "description": description, 
                         "createAt": date, "updateAt": date}]
-        write_file(name_file, data)
+        write_file(filename, data)
         print("Task added successfully (ID: 1)")
             
 
-def view_tasks(name_file: str, flag: str):
-    tasks: list[dict] | None = read_file(name_file)
+def view_tasks(filename: str, flag: str):
+    tasks: list[dict] | None = read_file(filename)
     if tasks is None:
         print("No tasks")
     elif flag is None:
@@ -113,7 +137,6 @@ def view_tasks(name_file: str, flag: str):
         for task in tasks:
             task = list(task.values())
             array.append(task)
-            print(task)
         print(pretty_table(array)) 
     else:
         text = ["id", "Description", "Time create", "Time Update"]
