@@ -28,44 +28,58 @@ def mark_progress(filename, task_id):
     else:
         print("Файл пуст")
 
+
 def delete_task(filename, task_id):
     tasks: list[dict] | None = read_file(filename)
-    if tasks is not None and tasks:
-        delete_ok = False
-        for task in tasks:
-            if task["id"] == task_id:
-                tasks.remove(task)
-                delete_ok = True
-                break
-        if delete_ok:
+    
+    if tasks is None or not tasks:
+        print("Файл пуст")
+        return
+    
+    low = 0
+    high = len(tasks) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        if tasks[mid]["id"] > task_id:
+            high = mid - 1
+        elif tasks[mid]["id"] < task_id:
+            low = mid + 1
+        elif tasks[mid]["id"] == task_id:
+            tasks.remove(tasks[mid])
             write_file(filename, tasks)
-            print("Запись успешно удалена!")
-        else:
-            print("Запись не найдена")
+            print("Задача успешно удалена!")
+            break
     else:
-        print("Файл пуст!")
+        print("Такой задачи не существует")
         
 
 def update_task(filename: str, task_id: int, new_description: str):
     tasks: list[dict] | None = read_file(filename)
-    if tasks is not None and tasks:
-        update_ok = False
+    
+    if tasks is None or not tasks:
+        print("Файл пуст")
+        return
+    
+    low = 0
+    high = len(tasks) - 1
+    while low <= high:
+        mid = (low + high) // 2
         
-        for task in tasks:
-            if task["id"] == task_id:
-                task["description"] = new_description
-                date = str(datetime.datetime.today().strftime("%Y.%m.%d %H:%M:%S"))
-                task["updateAt"] = date
-                update_ok = True
-                break
-
-        if update_ok:
+        if tasks[mid]["id"] > task_id:
+            high = mid - 1
+        elif tasks[mid]["id"] < task_id:
+            low = mid + 1
+        elif tasks[mid]["id"] == task_id:
+            tasks[mid]["description"] = new_description
+            date = str(datetime.datetime.today().strftime("%Y.%m.%d %H:%M:%S"))
+            tasks[mid]["updateAt"] = date
             write_file(filename, tasks)
             print("Задача успешно изменена!")
-        else:
-            print("Такой задачи не существует")
+            break
     else:
-        print("Файл пуст")
+        print(low, high)
+        print("Такой задачи не существует")
+    
 
 
 def create_task(name_file: str, description: str):
