@@ -1,6 +1,5 @@
-<h1><a href="https://github.com/bloodmarried/task_tracker_cli">Task Tracker CLI</a></h1>
+<h1><a href="https://roadmap.sh/projects/task-tracker">Task Tracker CLI</a></h1>
 
-https://roadmap.sh/projects/task-tracker<br>
 Данный проект предназначен исключительно для самоподготовки
 <h2>Описание</h2>
 Данная программа сочетает в себе все те реализации, описанные в задаче, а именно:<br>
